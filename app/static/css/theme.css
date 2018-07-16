@@ -2724,7 +2724,7 @@ section {
 }
 
 .header__navbar ul li.active > a {
-    color: #4272d7;
+    color: #10a515;
 }
 
 .header__navbar ul li.active > a .bot-line {
@@ -2862,6 +2862,10 @@ section {
     -ms-transform-origin: top center;
     -o-transform-origin: top center;
     transform-origin: top center;
+}
+
+.header__navbar ul li.active > a > span.bot-line{
+    background: #10a515 !important;
 }
 
 .setting-dropdown {

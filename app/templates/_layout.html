@@ -282,15 +282,22 @@
             <section class="alert-wrap p-t-10 p-b-10">
                 <div class="container">
                     <!-- ALERT-->
-                    <div class="alert au-alert-success alert-dismissible fade show au-alert au-alert--70per" role="alert">
-                        <i class="zmdi zmdi-check-circle"></i>
-                        <span class="content">You successfully read this important alert message.</span>
-                        <button class="close" type="button" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">
-                                <i class="zmdi zmdi-close-circle"></i>
-                            </span>
-                        </button>
-                    </div>
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert au-alert-success alert-dismissible fade show au-alert au-alert--70per" role="alert">
+                                    <i class="zmdi zmdi-check-circle"></i>
+                                    <span class="content">{{ message }}</span>
+                                    <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">
+                                            <i class="zmdi zmdi-close-circle"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
                     <!-- END ALERT-->
                 </div>
             </section>
