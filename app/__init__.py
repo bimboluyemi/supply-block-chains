@@ -11,7 +11,9 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
+# configure Blueprints here...
+from .views import home
+app.register_blueprint(home)
+
+
 
