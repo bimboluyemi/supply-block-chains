@@ -59,7 +59,7 @@
                                 </a>
                             </li>
                             <li class="{{ 'active' if title == 'Transactions' }}">
-                                <a href="#">
+                                <a href="{{ url_for('transaction.all_transactions') }}">
                                     <i class="fas fa-shopping-basket"></i>
                                     <span class="bot-line"></span>Transactions</a>
                             </li>

@@ -15,8 +15,9 @@ login.login_view = 'home.login'
 
 
 # configure Blueprints here...
-from .views import home
+from .views import home, transaction
 app.register_blueprint(home)
+app.register_blueprint(transaction)
 
 
 from app import models

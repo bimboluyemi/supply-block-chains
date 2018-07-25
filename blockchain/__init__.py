@@ -1,6 +1,7 @@
 from .blockchain_services import Blockchain
+from .constants import INITIATED
+from .request_validations import validate_request
 from uuid import uuid4
-from collections import OrderedDict
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -38,64 +39,11 @@ def add_new_transaction():
         return jsonify(response), 406
     else:
         # mine a block
-        node_id = str(uuid4())[:8].upper()
-        block = blockchain.mine('initiated', node_id)
+        block_type = tx_data['type']
+        node_id = str(uuid4())[:8].upper() if block_type == INITIATED else tx_data['node_id']
+        block = blockchain.mine(block_type, node_id)
         return jsonify(block), 200
 
-
-def validate_request(data):
-
-    if not data.get('type'):
-        return False
-    else:
-        type = data['type']
-        if type == 'initiated':
-            return validate_initiated_request(data)
-        elif type == 'acted':
-            return validate_acted_request(data)
-        elif type == 'tracked':
-            return validate_tracked_request(data)
-        else:
-            return False
-
-
-def validate_initiated_request(data):
-    required = ['actor', 'supplier', 'item', 'quantity', 'signature']
-    if not all(k in data for k in required):
-        return False
-
-    return OrderedDict({
-        'supplier': data['supplier'],
-        'item': data['item'],
-        'quantity': data['quantity']
-    })
-
-
-def validate_acted_request(data):
-    required = ['node_id', 'actor', 'origin', 'destination', 'item', 'quantity', 'action', 'signature']
-    if not all(k in data for k in required):
-        return False
-
-    return OrderedDict({
-        'node_id': data['node_id'],
-        'origin': data['origin'],
-        'destination': data['destination'],
-        'item': data['item'],
-        'action': data['action'],
-        'quantity': data['quantity']
-    })
-
-
-def validate_tracked_request(data):
-    required = ['node_id', 'actor', 'courier', 'status', 'signature']
-    if not all(k in data for k in required):
-        return False
-
-    return OrderedDict({
-        'node_id': data['node_id'],
-        'courier': data['courier'],
-        'status': data['status']
-    })
 
 
 
