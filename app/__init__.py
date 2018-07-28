@@ -21,6 +21,7 @@ app.register_blueprint(transaction)
 
 
 from app import models
+from app.models import seeds
 
 
 

@@ -1,10 +1,11 @@
 
-from ..constants import NODE_ADDRESS
+from ..constants import NODE_ADDRESS, INITIATED, ACTED, RETAILER, SUPPLIER, COURIER
 
 import requests
 import json
 
 all_transactions = []
+user_trasnsactions = []
 
 
 def fetch_transactions():
@@ -18,26 +19,43 @@ def fetch_transactions():
         content = []
         chain = json.loads(response.content)
         for block in chain["chain"]:
-            tx = block["transaction"]
-            tx["timestamp"] = block["timestamp"]
-            tx["node_id"] = block["node_id"]
-            tx["block_type"] = block["block_type"]
-            content.append(tx)
+            if block["block_type"] != '':
+                tx = block["transaction"]
+                tx["timestamp"] = block["timestamp"]
+                tx["node_id"] = block["node_id"]
+                tx["block_type"] = block["block_type"]
+                content.append(tx)
 
     global all_transactions
     all_transactions = sorted(content, key=lambda k: k['timestamp'], reverse=True)
 
 
-def fetch_user_transactions(user_public_key):
+def fetch_user_transactions(user):
     """
     get all transactions in the blockchain with the users public key
     :return:
     """
     fetch_transactions()
-    user_tx = [tx for tx in all_transactions if tx["actor"] == user_public_key or tx['supplier'] == user_public_key
-               or tx['courier'] == user_public_key]
+    d_key = ''
+    if len(all_transactions) > 0:
+        if user.user_role == RETAILER:
+            d_key = 'actor'
+        elif user.user_role == SUPPLIER:
+            d_key = 'supplier'
+        elif user.user_role == COURIER:
+            d_key = 'courier'
+        else:
+            return []
+    else:
+        return []
 
-    return user_tx
+    if any(d_key in transaction for transaction in all_transactions):
+        user_tx = [tx['node_id'] for tx in all_transactions if tx[d_key] == user.company]
+        transaction_ids = set(user_tx)
+
+        return [tx for tx in all_transactions if tx['block_type'] == INITIATED and tx['node_id'] in transaction_ids]
+    else:
+        return []
 
 
 def post_transaction(transaction):
@@ -45,7 +63,7 @@ def post_transaction(transaction):
     Add an initiated transaction to the blockchain
     :return:
     """
-    tx = json.dumps(transaction)
+    tx = transaction.__dict__
 
     # Submit a transaction
     new_tx_address = "{}/new_transaction".format(NODE_ADDRESS)
@@ -58,6 +76,14 @@ def post_transaction(transaction):
         return False
 
 
+def get_transaction_details(order_number, block_type):
+    """
+    Get the full details of a transaction
+    :param order_number: <str> the node_id of the transaction
+    :return:
+    """
+    fetch_transactions()
+    return [tx for tx in all_transactions if tx['block_type'] == block_type and tx['node_id'] == order_number]
 
 
 

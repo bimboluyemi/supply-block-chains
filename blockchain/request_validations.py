@@ -5,10 +5,10 @@ from .constants import INITIATED, ACTED, TRACKED
 
 def validate_request(data):
 
-    if not data.get('type'):
+    if not data.get('block_type'):
         return False
     else:
-        block_type = data['type']
+        block_type = data['block_type']
         if block_type == INITIATED:
             return validate_initiated_request(data)
         elif block_type == ACTED:
@@ -20,7 +20,7 @@ def validate_request(data):
 
 
 def validate_initiated_request(data):
-    required = ['actor', 'supplier', 'item', 'quantity', 'signature']
+    required = ['actor', 'supplier', 'item', 'quantity', 'actor_key', 'signature']
     if not all(k in data for k in required):
         return False
 
@@ -33,7 +33,7 @@ def validate_initiated_request(data):
 
 
 def validate_acted_request(data):
-    required = ['node_id', 'actor', 'origin', 'destination', 'item', 'quantity', 'action', 'signature']
+    required = ['node_id', 'actor', 'origin', 'destination', 'item', 'quantity', 'action', 'actor_key', 'signature']
     if not all(k in data for k in required):
         return False
 
@@ -48,7 +48,7 @@ def validate_acted_request(data):
 
 
 def validate_tracked_request(data):
-    required = ['node_id', 'actor', 'courier', 'status', 'signature']
+    required = ['node_id', 'actor', 'courier', 'status', 'actor_key', 'signature']
     if not all(k in data for k in required):
         return False
 

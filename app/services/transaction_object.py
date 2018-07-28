@@ -10,10 +10,11 @@ from collections import OrderedDict
 
 class Transaction:
 
-    def __init__(self, block_type, actor_public_key, actor_private_key, node_id=None, supplier=None, item=None,
+    def __init__(self, block_type, actor_public_key, actor_private_key, actor, node_id=None, supplier=None, item=None,
                  quantity=None, origin=None, destination=None, action=None, courier=None, status=None):
         self.block_type = block_type
-        self.actor = actor_public_key
+        self.actor = actor
+        self.actor_key = actor_public_key
         self.actor_private_key = actor_private_key
         self.node_id = node_id
         self.supplier = supplier

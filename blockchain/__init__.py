@@ -32,14 +32,14 @@ def add_new_transaction():
     if not transaction:
         return 'Invalid Request', 400
 
-    transaction_result = blockchain.submit_transaction(transaction, tx_data['actor'], tx_data['signature'])
+    transaction_result = blockchain.submit_transaction(transaction, tx_data['actor_key'], tx_data['signature'])
 
     if not transaction_result:
         response = {'message': 'Invalid Transaction!'}
         return jsonify(response), 406
     else:
         # mine a block
-        block_type = tx_data['type']
+        block_type = tx_data['block_type']
         node_id = str(uuid4())[:8].upper() if block_type == INITIATED else tx_data['node_id']
         block = blockchain.mine(block_type, node_id)
         return jsonify(block), 200

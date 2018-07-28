@@ -38,7 +38,8 @@ class Blockchain:
         else:
             raise ValueError('Invalid URL')
 
-    def verify_transaction_signature(self, transaction, actor_key,  signature):
+    @staticmethod
+    def verify_transaction_signature(transaction, actor_key, signature):
         """
         Check that the provided signature corresponds to transaction
         signed by the public key (actor's public key)
@@ -53,7 +54,7 @@ class Blockchain:
         """
         add a transaction to the transaction array if it is verified
         """
-        transaction_verified = True  # self.verify_transaction_signature(transaction, actor, signature)
+        transaction_verified = self.verify_transaction_signature(transaction, actor, signature)
         if transaction_verified:
             self.transaction = transaction
             return len(self.chain) + 1

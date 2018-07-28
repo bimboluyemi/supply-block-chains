@@ -3,11 +3,13 @@ from app.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import User
 from ..services.user_services import register_user
+from ..constants import RETAILER, SUPPLIER, COURIER
 
 
 home = Blueprint('home', __name__)
 
 
+@login_required
 @home.route('/')
 def dashboard():
     return render_template('home/index.html', title='Dashboard')
@@ -39,6 +41,8 @@ def register():
     if current_user.is_authenticated:
         return redirect(url_for('home.dashboard'))
     form = RegistrationForm()
+    roles = [RETAILER, SUPPLIER, COURIER]
+    form.user_role.choices = [(x, x) for x in roles]
     if form.validate_on_submit():
         register_user(form)
         flash('Congratulations, you are now a registered user!')
