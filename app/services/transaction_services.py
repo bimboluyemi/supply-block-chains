@@ -1,5 +1,5 @@
 
-from ..constants import NODE_ADDRESS, INITIATED, ACTED, RETAILER, SUPPLIER, COURIER
+from ..constants import NODE_ADDRESS, INITIATED, RETAILER, SUPPLIER, COURIER, TRACKED
 
 import requests
 import json
@@ -50,7 +50,7 @@ def fetch_user_transactions(user):
         return []
 
     if any(d_key in transaction for transaction in all_transactions):
-        user_tx = [tx['node_id'] for tx in all_transactions if tx[d_key] == user.company]
+        user_tx = [tx['node_id'] for tx in all_transactions if tx.get(d_key) is not None and tx[d_key] == user.company]
         transaction_ids = set(user_tx)
 
         return [tx for tx in all_transactions if tx['block_type'] == INITIATED and tx['node_id'] in transaction_ids]
@@ -82,8 +82,50 @@ def get_transaction_details(order_number, block_type):
     :param order_number: <str> the node_id of the transaction
     :return:
     """
-    fetch_transactions()
     return [tx for tx in all_transactions if tx['block_type'] == block_type and tx['node_id'] == order_number]
+
+
+def get_details(order_number):
+    fetch_transactions()
+    initiated = get_transaction_details(order_number, INITIATED)
+    tracking = get_transaction_details(order_number, TRACKED)
+    detail = {}
+    tracking_details = []
+
+    if any(initiated):
+        detail['order_number'] = initiated[0]['node_id']
+        detail['origin'] = initiated[0]['supplier']
+        detail['destination'] = initiated[0]['actor']
+        detail['item'] = initiated[0]['item']
+        detail['quantity'] = initiated[0]['quantity']
+
+        tracking_details.append({
+            'actor': initiated[0]['actor'],
+            'status': 'pending',
+            'timestamp': initiated[0]['timestamp'],
+            'courier': ''
+        })
+
+        if any(tracking):
+            for tracked in tracking:
+                tx = {'actor': tracked['actor'],
+                      'status': tracked['status'],
+                      'timestamp': tracked['timestamp'],
+                      'courier': tracked['courier']
+                      }
+                tracking_details.append(tx)
+
+        sorted_tx = sorted(tracking_details, key=lambda k: k['timestamp'], reverse=True)
+
+        detail['current_status'] = sorted_tx[0]['status']
+        detail['timestamp'] = sorted_tx[0]['timestamp']
+        detail['courier'] = sorted_tx[0]['courier']
+
+        return detail, sorted_tx
+
+
+
+
 
 
 

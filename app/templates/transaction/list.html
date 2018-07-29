@@ -38,6 +38,7 @@
                                     <th>Order No</th>
                                     <th>Origin</th>
                                     <th>Destination</th>
+                                    <th>Courier</th>
                                     <th>Description</th>
                                     <th>Status</th>
                                     <th>Date</th>
@@ -50,14 +51,15 @@
                                     <td>{{ tx.node_id }}</td>
                                     <td>{{ tx.actor }}</td>
                                     <td>{{ tx.supplier }}</td>
-                                    <td>{{ '{} {}'.format(tx.item, tx.quantity) }}</td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{{ tx.courier }}</td>
+                                    <td>{{ '{} - {}'.format(tx.item, tx.quantity) }}</td>
+                                    <td>{{ tx.status }}</td>
+                                    <td>{{ readable_time(tx.timestamp) }}</td>
                                     <td>
                                         <div class="table-data-feature">
-                                            <button class="item" data-toggle="tooltip" data-placement="top" title="Order Details">
+                                            <a href="{{ url_for('transaction.view_transaction', order=tx.node_id) }}" class="item" data-toggle="tooltip" data-placement="top" title="Order Details">
                                                 <i class="zmdi zmdi-more"></i>
-                                            </button>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>

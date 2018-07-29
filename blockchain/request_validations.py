@@ -1,6 +1,6 @@
 
 from collections import OrderedDict
-from .constants import INITIATED, ACTED, TRACKED
+from .constants import INITIATED, TRACKED
 
 
 def validate_request(data):
@@ -11,8 +11,6 @@ def validate_request(data):
         block_type = data['block_type']
         if block_type == INITIATED:
             return validate_initiated_request(data)
-        elif block_type == ACTED:
-            return validate_acted_request(data)
         elif block_type == TRACKED:
             return validate_tracked_request(data)
         else:
@@ -28,21 +26,6 @@ def validate_initiated_request(data):
         'actor': data['actor'],
         'supplier': data['supplier'],
         'item': data['item'],
-        'quantity': data['quantity']
-    })
-
-
-def validate_acted_request(data):
-    required = ['node_id', 'actor', 'origin', 'destination', 'item', 'quantity', 'action', 'actor_key', 'signature']
-    if not all(k in data for k in required):
-        return False
-
-    return OrderedDict({
-        'actor': data['actor'],
-        'origin': data['origin'],
-        'destination': data['destination'],
-        'item': data['item'],
-        'action': data['action'],
         'quantity': data['quantity']
     })
 

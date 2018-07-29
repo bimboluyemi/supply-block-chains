@@ -4,14 +4,14 @@ from Cryptodome.Hash import SHA
 from Cryptodome.PublicKey import RSA
 from Cryptodome.Signature import PKCS1_v1_5
 
-from ..constants import INITIATED, ACTED, TRACKED
+from ..constants import INITIATED, TRACKED
 from collections import OrderedDict
 
 
 class Transaction:
 
     def __init__(self, block_type, actor_public_key, actor_private_key, actor, node_id=None, supplier=None, item=None,
-                 quantity=None, origin=None, destination=None, action=None, courier=None, status=None):
+                 quantity=None, courier=None, status=None):
         self.block_type = block_type
         self.actor = actor
         self.actor_key = actor_public_key
@@ -20,9 +20,6 @@ class Transaction:
         self.supplier = supplier
         self.item = item
         self.quantity = quantity
-        self.origin = origin
-        self.destination = destination
-        self.action = action
         self.courier = courier
         self.status = status
 
@@ -32,15 +29,6 @@ class Transaction:
                 'actor': self.actor,
                 'supplier': self.supplier,
                 'item': self.item,
-                'quantity': self.quantity
-            })
-        elif self.block_type == ACTED:
-            return OrderedDict({
-                'actor': self.actor,
-                'origin': self.origin,
-                'destination': self.destination,
-                'item': self.item,
-                'action': self.action,
                 'quantity': self.quantity
             })
         elif self.block_type == TRACKED:

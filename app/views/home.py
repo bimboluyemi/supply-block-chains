@@ -9,8 +9,8 @@ from ..constants import RETAILER, SUPPLIER, COURIER
 home = Blueprint('home', __name__)
 
 
-@login_required
 @home.route('/')
+@login_required
 def dashboard():
     return render_template('home/index.html', title='Dashboard')
 
