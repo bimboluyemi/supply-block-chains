@@ -124,8 +124,27 @@ def get_details(order_number):
         return detail, sorted_tx
 
 
+def get_user_insights(user):
+    user_txs = fetch_user_transactions(user)
+
+    number = len(user_txs)
+
+    pending = [tx for tx in all_transactions if user_txs['block_type'] == TRACKED]
 
 
 
+    if user.user_role == RETAILER:
+        initiated_txs = ''
+        accepted_txs = ''
+        shipped_txs = ''
+    elif user.user_role == SUPPLIER:
+        incoming_txs = ''
+        shipped_txs = ''
+    elif user.user_role == COURIER:
+        incoming_txs = ''
+        recieved_txs = ''
+    else:
+        return []
 
+    return number
 
